@@ -1,0 +1,13 @@
+module top_module( 
+    input [254:0] in,
+    output [7:0] out );
+    always @(*) begin
+        out = 8'b00;
+        for(integer i = 0;i<255;i=i+1)
+            if(in[i])
+                out=out+2'b01;
+        	else
+            	out = out;
+    end
+
+endmodule
