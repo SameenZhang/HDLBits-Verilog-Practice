@@ -1,0 +1,10 @@
+module top_module (
+    input in1,
+    input in2,
+    input in3,
+    output out);
+    wire out_temp;
+    assign out_temp = ~(in1^in2);
+    assign out = out_temp^in3;
+
+endmodule
