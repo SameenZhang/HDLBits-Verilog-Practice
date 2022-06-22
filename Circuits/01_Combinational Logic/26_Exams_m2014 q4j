@@ -1,0 +1,20 @@
+module top_module (
+    input [3:0] x,
+    input [3:0] y, 
+    output [4:0] sum);
+    
+    wire cout[3:0];
+    assign cout[0] = x[0]&y[0];
+    assign sum[0] = x[0]^y[0];
+    
+    fadder inst1(.a(x[1]),.b(y[1]),.cin(cout[0]),.cout(cout[1]),.sum(sum[1]));
+    fadder inst2(.a(x[2]),.b(y[2]),.cin(cout[1]),.cout(cout[2]),.sum(sum[2]));
+    fadder inst3(.a(x[3]),.b(y[3]),.cin(cout[2]),.cout(cout[3]),.sum(sum[3]));
+    assign sum[4]=cout[3];
+
+
+endmodule
+module fadder(input a,input b,input cin,output cout,output sum);
+    assign sum = a^b^cin;
+    assign cout = (a&b)|(a&cin)|(b&cin);
+endmodule
