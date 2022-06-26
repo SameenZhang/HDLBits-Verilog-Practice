@@ -1,0 +1,28 @@
+module top_module (
+    input clk,
+    input reset,   // Synchronous active-high reset
+    output [3:1] ena,
+    output [15:0] q);
+    
+    counter inst1_one(.clk(clk),.reset(reset),.ena(1'b1),.q(q[3:0]));
+    counter inst2_ten(.clk(clk),.reset(reset),.ena(q[3:0]==4'd09),.q(q[7:4]));
+    counter inst3_hundred(.clk(clk),.reset(reset),.ena(q[7:4]==4'd09&&q[3:0]==4'd09),.q(q[11:8]));
+    counter inst4_thousand(.clk(clk),.reset(reset),.ena(q[11:8]==4'd09 && q[7:4]==4'd09 && q[3:0]==4'd09),.q(q[15:12]));
+    
+    assign ena ={q[11:8]==4'd09 && q[7:4]==4'd09 && q[3:0]==4'd09,q[7:4]==4'd09&&q[3:0]==4'd09,q[3:0]==4'd09};
+
+endmodule
+
+module counter(input clk,input reset,input ena,output reg [3:0] q);
+    always @(posedge clk) begin
+        if(reset) begin
+            q <= 0;
+        end
+        else if(ena) begin
+            if(q == 4'd09)
+                q <= 0;
+            else
+                q <= q+1'b1;
+        end
+    end
+endmodule
