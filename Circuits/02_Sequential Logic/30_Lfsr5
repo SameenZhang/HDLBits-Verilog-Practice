@@ -5,7 +5,7 @@ module top_module(
 ); 
     always @(posedge clk) begin
         if(reset)
-            q <= 1'h5;
+            q <= 5'h1;
         else begin
             q[4] <= 1'b0^q[0];
         	q[3] <= q[4];
