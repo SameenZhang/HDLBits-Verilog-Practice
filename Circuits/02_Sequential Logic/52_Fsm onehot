@@ -1,0 +1,21 @@
+module top_module(
+    input in,
+    input [9:0] state,
+    output [9:0] next_state,
+    output out1,
+    output out2);
+	
+    parameter s0=4'd0,s1=4'd1,s2=4'd2,s3=4'd3,s4=4'd4,s5=4'd5,s6=4'd6,s7=4'd7,s8=4'd8,s9=4'd9;
+    assign next_state[0] =~in&(state[s0]|state[s1]|state[s2]|state[s3]|state[s4]|state[s7]|state[s8]|state[s9]);
+    assign next_state[1] =in&(state[s0]|state[s8]|state[s9]);
+    assign next_state[2] =in&state[s1];
+    assign next_state[3] =in&state[s2];
+    assign next_state[4] =in&state[s3];
+    assign next_state[5] =in&state[s4];
+    assign next_state[6] =in&state[s5];
+    assign next_state[7] =in&(state[s6]|state[s7]);
+    assign next_state[8] =~in&state[s5];
+    assign next_state[9] =~in&state[s6];
+    assign out1 =(state[s8]|state[s9]);
+    assign out2 =(state[s9]|state[s7]);
+endmodule
