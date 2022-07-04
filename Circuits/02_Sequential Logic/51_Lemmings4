@@ -1,0 +1,56 @@
+module top_module(
+    input clk,
+    input areset,    // Freshly brainwashed Lemmings walk left.
+    input bump_left,
+    input bump_right,
+    input ground,
+    input dig,
+    output walk_left,
+    output walk_right,
+    output aaah,
+    output digging ); 
+    
+    reg [2:0] state,next_state;
+    parameter left=0,right=1;
+    parameter fall_left=2,fall_right=3;
+    parameter dig_left=4,dig_right=5;
+    parameter splat=6,over=7;
+    reg [7:0] cout;
+    
+    always @(posedge clk,posedge areset) begin
+        if(areset)
+            state <= left;
+        else
+            state <= next_state;
+    end
+    
+    always @(posedge clk,posedge areset) begin
+        if(areset)
+            cout <= 8'b0;
+        else if((state==fall_left)|(state==fall_right)) begin
+            cout <=cout+1'b1;
+        end
+        else begin
+            cout <= 8'b0;
+        end
+    end
+        
+    always @(*) begin
+        case(state)
+            left:next_state <=(!ground)?fall_left:(dig?dig_left:(bump_left?right:left));
+            right:next_state <=(!ground)?fall_right:(dig?dig_right:(bump_right?left:right));
+            fall_left:next_state <=(!ground)?fall_left:((cout>=8'd20)?splat:left);
+            fall_right:next_state <=(!ground)?fall_right:((cout>=8'd20)?splat:right);
+            dig_left:next_state <=ground?dig_left:fall_left;
+            dig_right:next_state <=ground?dig_right:fall_right;
+            splat:next_state <=ground?over:splat;
+            over:next_state <=over;
+            
+        endcase
+    end
+        
+    assign walk_left =(state==left);
+    assign walk_right =(state==right);
+    assign aaah =(state==fall_left|state==fall_right);
+    assign digging =(state==dig_left|state==dig_right);
+endmodule
