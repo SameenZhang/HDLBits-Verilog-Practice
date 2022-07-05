@@ -1,0 +1,36 @@
+module top_module(
+    input clk,
+    input in,
+    input reset,    // Synchronous reset
+    output done
+); 
+    
+    reg [15:0] state,next_state;
+    parameter start=0,d1=1,d2=2,d3=3,d4=4,d5=5,d6=6,d7=7,d8=8,stop=9,idle=10,error=11;
+    
+    always @(*) begin
+        case(state)
+            start:next_state <=d1;
+            d1:next_state <=d2;
+            d2:next_state <=d3;
+            d3:next_state <=d4;
+            d4:next_state <=d5;
+            d5:next_state <=d6;
+            d6:next_state <=d7;
+            d7:next_state <=d8;
+            d8:next_state <=in?stop:error;
+            error:next_state <=in?idle:start;
+            stop:next_state <=in?idle:start;
+            idle:next_state <=in?idle:start;
+            default next_state=idle;
+        endcase
+    end
+    always @(posedge clk) begin
+        if(reset)
+            state <=idle;
+    	else
+            state <=next_state;
+    end
+    
+    assign done =(state==stop);
+endmodule
